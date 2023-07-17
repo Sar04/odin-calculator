@@ -24,7 +24,9 @@ function updateDisplay2(){
 }
 
 function updateDisplay(){
-    if(!Number.isFinite(Number(problem[problem.length-1]))){
+    if(problem.length<1){
+        DISPLAY.textContent = '0';
+    }else if(!Number.isFinite(Number(problem[problem.length-1]))){
         return
     }else{
         DISPLAY.textContent = problem[problem.length -1];
