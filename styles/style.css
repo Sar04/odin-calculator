@@ -1,0 +1,33 @@
+*{
+    margin:0;
+    padding:0;
+}
+.container{
+    width: 600px;
+    height: 600px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    margin-top: 400px;
+    margin-left: 50%;
+    transform:translate(-50%,-50%);
+}
+button{
+    margin: 10px;
+    padding:30px;
+    flex-grow: 1;
+}
+.container > div{
+    justify-content: center;
+    flex-grow: 1;
+    background-color: blue;
+    display:flex;
+}
+
+.container > p{
+    flex-grow:4;
+    background-color: grey;
+    
+}
