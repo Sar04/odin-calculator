@@ -19,8 +19,16 @@ const CLEAR = document.querySelector('#clear');
 const NUMBERS =[ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO];
 const OPERATORS = [ADD,SUBTRACT,MULTIPLY,DIVIDE];
 
-function updateDisplay(){
+function updateDisplay2(){
     DISPLAY.textContent = problem.join("");
+}
+
+function updateDisplay(){
+    if(!Number.isFinite(Number(problem[problem.length-1]))){
+        return
+    }else{
+        DISPLAY.textContent = problem[problem.length -1];
+    }
 }
 
 NUMBERS.forEach(button => {
