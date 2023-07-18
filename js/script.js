@@ -17,6 +17,7 @@ const DISPLAY = document.querySelector('.display');
 const EQUALS =  document.querySelector('#equals');
 const CLEAR = document.querySelector('#clear');
 const POINT = document.querySelector('#decimal');
+const DELETE = document.querySelector('#delete');
 const NUMBERS =[ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO];
 const OPERATORS = [ADD,SUBTRACT,MULTIPLY,DIVIDE];
 
@@ -95,9 +96,29 @@ POINT.addEventListener('click' , ()=>{
     }else if(problem.length % 2 == 0){
         return
     }else if(problem[problem.length-1].indexOf('.')<0){
-        problem[problem.length-1] += '.';
+        if(problem[problem.length-1].length<1){
+            problem[problem.length-1] += '0.';
+        }else{
+            problem[problem.length-1] += '.';
+        }        
     }
     updateDisplay();
+});
+
+DELETE.addEventListener('click' , ()=>{
+    if(problem.length<1){
+        return
+    }else if(problem.length % 2 == 0){
+        problem.pop();
+        clearHighlight();
+    }else{
+        let strLen = problem[problem.length-1].length;
+        problem[problem.length-1]=problem[problem.length-1].slice(0,strLen-1);
+    }
+    updateDisplay();
+    if(problem[problem.length-1].length<1){
+        DISPLAY.textContent = '0';
+    }
 });
 
 
@@ -111,10 +132,10 @@ function solveProblem(problem){
         }else{
             problem[2] = Math.round((calculate(problem[0],problem[1],problem[2]) + Number.EPSILON)*100)/100;
             problem.splice(0,2);
+            problem[0] = problem[0].toString();
         }
         
-    }
-    problem[0] = problem[0].toString();
+    }    
 }
 
 function calculate(nr1,operator,nr2){
