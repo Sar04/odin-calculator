@@ -16,13 +16,10 @@ const DIVIDE = document.querySelector('#divide');
 const DISPLAY = document.querySelector('.display');
 const EQUALS =  document.querySelector('#equals');
 const CLEAR = document.querySelector('#clear');
+const POINT = document.querySelector('#decimal');
 const NUMBERS =[ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO];
 const OPERATORS = [ADD,SUBTRACT,MULTIPLY,DIVIDE];
 
-
-function updateDisplay2(){
-    DISPLAY.textContent = problem.join("");
-}
 
 function updateDisplay(){
     if(problem.length<1){
@@ -58,6 +55,7 @@ OPERATORS.forEach(button => {
         clearHighlight();
         button.classList.add('highlight');
         if(problem.length<1){
+            clearHighlight();
             alert('input a number first');
         }else if(problem.length>2){
             solveProblem(problem);
@@ -91,8 +89,20 @@ CLEAR.addEventListener('click', ()=>{
     updateDisplay();
 });
 
+POINT.addEventListener('click' , ()=>{
+    if(problem.length<1){
+        problem.push('0.');
+    }else if(problem.length % 2 == 0){
+        return
+    }else if(problem[problem.length-1].indexOf('.')<0){
+        problem[problem.length-1] += '.';
+    }
+    updateDisplay();
+});
+
 
 let problem = [];
+
 function solveProblem(problem){
     while(problem.length>1){
         if(problem[1] === '/' && problem[2] == 0){
@@ -104,7 +114,9 @@ function solveProblem(problem){
         }
         
     }
+    problem[0] = problem[0].toString();
 }
+
 function calculate(nr1,operator,nr2){
    switch(operator){
     case '+':
