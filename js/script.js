@@ -1,13 +1,3 @@
-const ONE = document.querySelector('#one');
-const TWO = document.querySelector('#two');
-const THREE = document.querySelector('#three');
-const FOUR = document.querySelector('#four');
-const FIVE = document.querySelector('#five');
-const SIX = document.querySelector('#six');
-const SEVEN = document.querySelector('#seven');
-const EIGHT = document.querySelector('#eight');
-const NINE = document.querySelector('#nine');
-const ZERO = document.querySelector('#zero');
 const ADD = document.querySelector('#add');
 const SUBTRACT = document.querySelector('#subtract');
 const MULTIPLY = document.querySelector('#multiply');
@@ -17,7 +7,7 @@ const EQUALS =  document.querySelector('#equals');
 const CLEAR = document.querySelector('#clear');
 const POINT = document.querySelector('#decimal');
 const DELETE = document.querySelector('#delete');
-const NUMBERS =[ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO];
+const NUMBERS = Array.from(document.querySelectorAll('.number'));
 const OPERATORS = [ADD,SUBTRACT,MULTIPLY,DIVIDE];
 
 let problem = [];
@@ -26,7 +16,7 @@ let problem = [];
 
 NUMBERS.forEach(button => {
     button.addEventListener('click' , ()=>{
-        inputNumber(button);
+        inputNumber(button.textContent);
     });
 });
 
@@ -37,16 +27,7 @@ OPERATORS.forEach(button => {
 });
 
 EQUALS.addEventListener('click', ()=>{
-    clearHighlight();
-    if(problem.length==2){
-        problem.pop();
-    }else if(problem.length<3){
-        return
-    }else{
-        solveProblem(problem);
-        updateDisplay();
-    }
-    
+    equals();    
 });
 
 CLEAR.addEventListener('click', ()=>{
@@ -56,35 +37,11 @@ CLEAR.addEventListener('click', ()=>{
 });
 
 POINT.addEventListener('click' , ()=>{
-    if(problem.length<1){
-        problem.push('0.');
-    }else if(problem.length % 2 == 0){
-        return
-    }else if(problem[problem.length-1].indexOf('.')<0){
-        if(problem[problem.length-1].length<1){
-            problem[problem.length-1] += '0.';
-        }else{
-            problem[problem.length-1] += '.';
-        }        
-    }
-    updateDisplay();
+    point();
 });
 
 DELETE.addEventListener('click' , ()=>{
-    if(problem.length<1){
-        return
-    }else if(problem.length % 2 == 0){
-        problem.pop();
-        clearHighlight();
-    }else{
-        let strLen = problem[problem.length-1].length;
-        if(strLen == 1){
-            problem.pop();
-        }else{
-            problem[problem.length-1]=problem[problem.length-1].slice(0,strLen-1);
-        }        
-    }
-    updateDisplay();
+    del();
 });
 
 //functions
@@ -105,13 +62,15 @@ function clearHighlight(){
     });
 }
 
-function inputNumber(button){
+function inputNumber(text){
     if(problem.length <1 ){
-        problem.push(button.textContent);
+        problem.push(text);
     }else if(problem.length % 2 == 0){
-        problem[problem.length] = button.textContent;
+        problem[problem.length] = text;
+    }else if(problem.length == 1 && problem[0] == 0 && problem[0].indexOf('.')<0){
+        problem[0] = text;
     }else{
-        problem[problem.length-1] += button.textContent;
+        problem[problem.length-1] += text;
     }
     updateDisplay();
 }
@@ -129,6 +88,50 @@ function inputOperator(button){
         problem.push(button.textContent);
     }else{
         problem[problem.length - 1] = button.textContent;
+    }
+    updateDisplay();
+}
+
+function del(){
+    if(problem.length<1){
+        return
+    }else if(problem.length % 2 == 0){
+        problem.pop();
+        clearHighlight();
+    }else{
+        let strLen = problem[problem.length-1].length;
+        if(strLen == 1){
+            problem.pop();
+        }else{
+            problem[problem.length-1]=problem[problem.length-1].slice(0,strLen-1);
+        }        
+    }
+    updateDisplay();
+}
+
+function equals(){
+    clearHighlight();
+    if(problem.length==2){
+        problem.pop();
+    }else if(problem.length<3){
+        return
+    }else{
+        solveProblem(problem);
+        updateDisplay();
+    }
+}
+
+function point(){
+    if(problem.length<1){
+        problem.push('0.');
+    }else if(problem.length % 2 == 0){
+        return
+    }else if(problem[problem.length-1].indexOf('.')<0){
+        if(problem[problem.length-1].length<1){
+            problem[problem.length-1] += '0.';
+        }else{
+            problem[problem.length-1] += '.';
+        }        
     }
     updateDisplay();
 }
@@ -174,5 +177,37 @@ function divide(a,b){
 // keyboard functionality
 
 document.addEventListener('keydown', (event)=>{
-    console.log(event);
+   console.log(event.key);
+   if(!isNaN(Number(event.key))){
+    inputNumber(event.key);
+   }
+   switch(event.key){
+    case '+': 
+        inputOperator(ADD);
+        break
+    case '-':
+         inputOperator(SUBTRACT);
+         break
+    case '*':
+        inputOperator(MULTIPLY);
+        break
+    case '/': 
+        inputOperator(DIVIDE);
+        break
+    case 'Enter':
+        equals();
+        break
+    case '=':
+       equals();
+        break
+    case 'Backspace':
+        del();
+        break
+    case 'Delete':
+        del();
+        break
+    case '.':
+        point();
+        break
+    }
 });
