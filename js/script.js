@@ -19,6 +19,7 @@ const CLEAR = document.querySelector('#clear');
 const NUMBERS =[ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO];
 const OPERATORS = [ADD,SUBTRACT,MULTIPLY,DIVIDE];
 
+
 function updateDisplay2(){
     DISPLAY.textContent = problem.join("");
 }
@@ -31,6 +32,12 @@ function updateDisplay(){
     }else{
         DISPLAY.textContent = problem[problem.length -1];
     }
+}
+
+function clearHighlight(){
+    OPERATORS.forEach(button =>{
+        button.classList.remove('highlight');
+    });
 }
 
 NUMBERS.forEach(button => {
@@ -48,8 +55,14 @@ NUMBERS.forEach(button => {
 
 OPERATORS.forEach(button => {
     button.addEventListener('click' , ()=>{
+        clearHighlight();
+        button.classList.add('highlight');
         if(problem.length<1){
             alert('input a number first');
+        }else if(problem.length>2){
+            solveProblem(problem);
+            updateDisplay();
+            problem.push(button.textContent);
         }else if(problem.length % 2 != 0){
             problem.push(button.textContent);
         }else{
@@ -60,20 +73,29 @@ OPERATORS.forEach(button => {
 });
 
 EQUALS.addEventListener('click', ()=>{
-    solveProblem(problem);
-    updateDisplay();
+    clearHighlight();
+    if(problem.length==2){
+        problem.pop();
+    }else if(problem.length<3){
+        return
+    }else{
+        solveProblem(problem);
+        updateDisplay();
+    }
+    
 });
 
 CLEAR.addEventListener('click', ()=>{
+    clearHighlight();
     problem.splice(0,problem.length);
     updateDisplay();
 });
 
 
-let problem =[];
+let problem = [];
 function solveProblem(problem){
     while(problem.length>1){
-        if(problem[1] === '/' && problem[2] === '0'){
+        if(problem[1] === '/' && problem[2] == 0){
             problem.splice(0,problem.length);
             alert('no');
         }else{
