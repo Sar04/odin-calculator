@@ -1,4 +1,3 @@
-
 const ONE = document.querySelector('#one');
 const TWO = document.querySelector('#two');
 const THREE = document.querySelector('#three');
@@ -21,53 +20,19 @@ const DELETE = document.querySelector('#delete');
 const NUMBERS =[ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,ZERO];
 const OPERATORS = [ADD,SUBTRACT,MULTIPLY,DIVIDE];
 
+let problem = [];
 
-function updateDisplay(){
-    if(problem.length<1){
-        DISPLAY.textContent = '0';
-    }else if(!Number.isFinite(Number(problem[problem.length-1]))){
-        return
-    }else{
-        DISPLAY.textContent = problem[problem.length -1];
-    }
-}
 
-function clearHighlight(){
-    OPERATORS.forEach(button =>{
-        button.classList.remove('highlight');
-    });
-}
 
 NUMBERS.forEach(button => {
-    button.addEventListener('click' , () => {
-        if(problem.length <1 ){
-            problem.push(button.textContent);
-        }else if(problem.length % 2 == 0){
-            problem[problem.length] = button.textContent;
-        }else{
-            problem[problem.length-1] += button.textContent;
-        }
-        updateDisplay();
+    button.addEventListener('click' , ()=>{
+        inputNumber(button);
     });
 });
 
 OPERATORS.forEach(button => {
     button.addEventListener('click' , ()=>{
-        clearHighlight();
-        button.classList.add('highlight');
-        if(problem.length<1){
-            clearHighlight();
-            alert('input a number first');
-        }else if(problem.length>2){
-            solveProblem(problem);
-            updateDisplay();
-            problem.push(button.textContent);
-        }else if(problem.length % 2 != 0){
-            problem.push(button.textContent);
-        }else{
-            problem[problem.length - 1] = button.textContent;
-        }
-        updateDisplay();
+       inputOperator(button);
     })
 });
 
@@ -113,29 +78,71 @@ DELETE.addEventListener('click' , ()=>{
         clearHighlight();
     }else{
         let strLen = problem[problem.length-1].length;
-        problem[problem.length-1]=problem[problem.length-1].slice(0,strLen-1);
+        if(strLen == 1){
+            problem.pop();
+        }else{
+            problem[problem.length-1]=problem[problem.length-1].slice(0,strLen-1);
+        }        
     }
     updateDisplay();
-    if(problem[problem.length-1].length<1){
-        DISPLAY.textContent = '0';
-    }
 });
 
+//functions
 
-let problem = [];
+function updateDisplay(){
+    if(problem.length<1){
+        DISPLAY.textContent = '0';
+    }else if(!Number.isFinite(Number(problem[problem.length-1]))){
+        DISPLAY.textContent = problem[problem.length-2];
+    }else{
+        DISPLAY.textContent = problem[problem.length -1];
+    }
+}
+
+function clearHighlight(){
+    OPERATORS.forEach(button =>{
+        button.classList.remove('highlight');
+    });
+}
+
+function inputNumber(button){
+    if(problem.length <1 ){
+        problem.push(button.textContent);
+    }else if(problem.length % 2 == 0){
+        problem[problem.length] = button.textContent;
+    }else{
+        problem[problem.length-1] += button.textContent;
+    }
+    updateDisplay();
+}
+
+function inputOperator(button){
+    clearHighlight();
+    button.classList.add('highlight');
+    if(problem.length<1){
+        clearHighlight();
+        alert('input a number first');
+    }else if(problem.length>2){
+        problem.push(button.textContent);
+        solveProblem(problem);
+    }else if(problem.length % 2 != 0){
+        problem.push(button.textContent);
+    }else{
+        problem[problem.length - 1] = button.textContent;
+    }
+    updateDisplay();
+}
 
 function solveProblem(problem){
-    while(problem.length>1){
-        if(problem[1] === '/' && problem[2] == 0){
-            problem.splice(0,problem.length);
-            alert('no');
-        }else{
-            problem[2] = Math.round((calculate(problem[0],problem[1],problem[2]) + Number.EPSILON)*100)/100;
-            problem.splice(0,2);
-            problem[0] = problem[0].toString();
-        }
-        
-    }    
+    if(problem[1] === '/' && problem[2] == 0){
+        clearHighlight();
+        problem.splice(0,problem.length);
+        alert('no');
+    }else{
+        problem[2] = Math.round((calculate(problem[0],problem[1],problem[2]) + Number.EPSILON)*100)/100;
+        problem.splice(0,2);
+        problem[0] = problem[0].toString();
+    }           
 }
 
 function calculate(nr1,operator,nr2){
@@ -163,3 +170,9 @@ function multiply(a,b){
 function divide(a,b){
     return Number(a) / Number(b);
 }
+
+// keyboard functionality
+
+document.addEventListener('keydown', (event)=>{
+    console.log(event);
+});
